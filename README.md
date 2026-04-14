@@ -11,8 +11,13 @@ It is the second backend for the CGAL `Basic_viewer` infrastructure, alongside t
 - Interactive orbit and free-fly camera
 - Phong-shaded faces, cylinder edges, sphere vertices
 - Interactive clipping plane with four display modes
-- Keyframe-based camera animation 
+- Keyframe-based camera animation (SLERP + LERP)
 - Screenshot / headless rendering (no display required)
+- Multiple concurrent windows
+- Custom per-element coloring via policy objects
+- QWERTY and AZERTY keyboard layout support
+
+<div align="center"><em>Illustration: the viewer window showing a Phong-shaded surface mesh (e.g. the elephant.off model) with the world axis overlay visible in the bottom-left corner, rendered against the default dark background.</em></div>
 
 ### Table of Contents
 
@@ -82,6 +87,8 @@ make draw_surface_mesh_height
 | `draw_several_windows` | Two independent viewer windows running in the same process |
 | `basic_viewer_glfw_screenshot` | Headless rendering — writes a PNG without showing a window |
 
+<div align="center"><em>Illustration: the six bundled example windows side by side — `draw_surface_mesh_height` (height-colored mesh), `draw_surface_mesh_vcolor` (per-vertex colors), `draw_mesh_and_points` (mixed scene), `draw_several_windows` (two independent windows), and `basic_viewer_glfw_screenshot` (saved PNG output).</em></div>
+
 ### Minimal usage pattern
 
 ```cpp
@@ -147,6 +154,8 @@ int main()
     GLFW window + input
 ```
 
+<div align="center"><em>Illustration: a box-and-arrow diagram of the component hierarchy — `Basic_viewer` at the centre, with arrows pointing up to `Graphics_scene` (data source) and down to `Camera`, `Clipping_plane`, `Animation_controller`, and the shader/VAO layer, with GLFW and glad at the bottom.</em></div>
+
 ### Namespace layout
 
 ```
@@ -164,7 +173,6 @@ CGAL::
   Animation_controller  ← Animation_controller.h
   Line_renderer         ← Line_renderer.h
   Shader                ← Shader.h
-  VAO / BufferObject    ← buffer/VAO.h, buffer/BufferObject.h
 ```
 
 ### Header-only design
@@ -205,6 +213,8 @@ The scene organizes geometry into five primitive types:
 | Rays | Origin + direction | Half-lines, normals overlay |
 | Lines | Infinite lines (stored as two points) | Axes, guides |
 | Faces | Triangulated polygon faces | Mesh faces |
+
+<div align="center"><em>Illustration: five primitive types rendered in a single scene — a cluster of sphere-style points, a few line segments shown as cylinders, a ray as a half-arrow, an infinite line, and a shaded triangulated face — each labelled with its primitive type name.</em></div>
 
 ### Buffer layout
 
@@ -310,6 +320,8 @@ while (!glfwWindowShouldClose(window))
 ```
 
 `need_update()` returns `true` when the camera or clipping plane still has pending motion (target ≠ current position/orientation), preventing needless redraws when the scene is static.
+
+<div align="center"><em>Illustration: the frame lifecycle as a flowchart — `glfwPollEvents` → `handle_events` → `need_update?` → `render_scene` (with sub-steps: camera update, MVP computation, draw calls, buffer swap) → back to poll, with an early-exit branch when nothing has changed.</em></div>
 
 ### render_scene()
 
@@ -451,6 +463,8 @@ if (u_RenderingTransparency < 1.0) {
 
 The `u_RenderingMode` maps to the `RenderingMode` enum: `DRAW_ALL = -1`, `DRAW_INSIDE_ONLY = 0`, `DRAW_OUTSIDE_ONLY = 1`.
 
+<div align="center"><em>Illustration: a mesh rendered three times side by side — left: flat-shaded with default mono color; centre: Phong-shaded with per-face colors and specular highlight; right: smooth-shaded showing the ambient + diffuse + specular decomposition labelled on the surface.</em></div>
+
 ### Geometry shader use (sphere / cylinder)
 
 Using geometry shaders to expand primitives avoids pre-tessellating the CPU-side data. A point in the VAO is a single `vec3`; the sphere geometry shader generates a camera-facing quad around it and the fragment shader shades it as a sphere. A segment is two `vec3`s; the cylinder geometry shader generates the six triangles of a rectangular tube. This trades some GPU computation for significantly smaller CPU-side buffers.
@@ -472,6 +486,8 @@ The camera has two orthogonal axes of variation:
 - `ORTHOGRAPHIC`: `ortho(-halfW, +halfW, -halfH, +halfH, znear, zfar)`. Automatically selected for 2D scenes.
 
 Toggle type with the `T` key at runtime, or call `camera_position()` / `scene_center()` before `show()`.
+
+<div align="center"><em>Illustration: four viewports of the same mesh — top-left: orbiter + perspective (natural 3D view with depth cues); top-right: orbiter + orthographic (flat, no perspective foreshortening); bottom-left: free-fly + perspective (first-person feel); bottom-right: 2D scene auto-switched to orthographic with roll-only rotation locked.</em></div>
 
 ### Internal state
 
@@ -690,6 +706,8 @@ The `add_description()` call registers the binding text automatically from the k
 
 The clipping plane is an infinite mathematical plane that divides the scene into two half-spaces: "inside" and "outside." The viewer uses it to cut through geometry and inspect cross-sections without modifying any mesh data.
 
+<div align="center"><em>Illustration: a labeled diagram of a mesh sphere with the clipping plane cutting through it horizontally, showing: the plane's normal vector arrow, the "inside" half-space label, the "outside" half-space label, and the point-on-plane position marker.</em></div>
+
 ### Display modes
 
 Cycling through `C` advances through four modes (stored in `DisplayMode`):
@@ -701,13 +719,15 @@ Cycling through `C` advances through four modes (stored in `DisplayMode`):
 | `CLIPPING_PLANE_SOLID_HALF_WIRE_HALF` | Inside half solid, outside half as wireframe |
 | `CLIPPING_PLANE_SOLID_HALF_ONLY` | Only inside half rendered (hard cut) |
 
+<div align="center"><em>Illustration: the same mesh shown four times with the same horizontal cut — from left to right: `OFF` (full mesh, no cut), `SOLID_HALF_TRANSPARENT_HALF` (solid bottom, translucent top), `SOLID_HALF_WIRE_HALF` (solid bottom, wireframe top), `SOLID_HALF_ONLY` (only the bottom half visible, clean cross-section edge).</em></div>
+
 When mode is not `OFF`, the shader `u_RenderingMode` uniform switches between `DRAW_INSIDE_ONLY` and `DRAW_OUTSIDE_ONLY` across the two face draw passes.
 
 The plane's visual quad (a colored rectangle showing plane position and orientation) is drawn by `render_clipping_plane()` using `m_ShaderPlane`. Its visibility is independent from the clipping mode and toggled separately with `Alt+C`.
 
 ### Implementation: Clipping_plane
 
-`Clipping_plane` extends `Line_renderer` (to inherit VAO/VBO machinery for drawing the plane quad). Its internal state mirrors `Camera`: quaternion orientation, current and target position/pitch/yaw, and independent smoothing factors.
+`Clipping_plane` extends `Line_renderer` (to inherit its raw OpenGL buffer machinery for drawing the plane quad). Its internal state mirrors `Camera`: quaternion orientation, current and target position/pitch/yaw, and independent smoothing factors.
 
 - Default position: origin `(0, 0, 0)`
 - Default normal: +Z axis `(0, 0, 1)`
@@ -783,6 +803,8 @@ std::vector<AnimationKeyFrame> m_KeyFrames;
 3. Repeat steps 1–2 for each waypoint. At least 2 keyframes are required before playback can start.
 4. Press `Shift+A` → `run_or_stop_animation()` → starts playback from the beginning.
 5. Press `Shift+A` again to stop. Press `Shift+X` to clear all keyframes.
+
+<div align="center"><em>Illustration: a 3D scene viewed from above, showing the camera's recorded trajectory as a smooth curve passing through four keyframe markers (numbered 0–3), with SLERP arc annotations between adjacent orientations and the rendered viewpoint frustum drawn at each keyframe position.</em></div>
 
 ### Interpolation
 
@@ -1045,6 +1067,8 @@ Available policy lambdas (all have sensible defaults):
 | `vertex_color` | `(DS, VertexDescriptor) → Color` | random |
 | `edge_color` | `(DS, EdgeDescriptor) → Color` | random |
 | `face_color` | `(DS, FaceDescriptor) → Color` | random |
+
+<div align="center"><em>Illustration: the same surface mesh rendered twice side by side — left: default mono color; right: each face colored by `fi % 3` (red / green / blue), demonstrating the effect of the custom `Graphics_scene_options` policy.</em></div>
 
 ### Headless screenshot
 
