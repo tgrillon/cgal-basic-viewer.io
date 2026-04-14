@@ -10,20 +10,31 @@ A lightweight real-time 3D/2D viewer for the [CGAL](https://www.cgal.org/) compu
 
 Two camera controllers are available: **Orbiter** (turntable, stays focused on the object) and **Free-fly** (FPS-style, free navigation). Both support **perspective** and **orthographic** projection, toggled at runtime with **`O`**.
 
-| Perspective | Orthographic |
-|---|---|
-| ![Perspective](data/Basic_viewer_glfw_perspective_showcase.png) | ![Orthographic](data/Basic_viewer_glfw_orthographic_showcase.png) |
+<p align="center">
+  <img src="data/Basic_viewer_glfw_perspective_showcase.png" width="45%" alt="Perspective" />
+  &nbsp;&nbsp;
+  <img src="data/Basic_viewer_glfw_orthographic_showcase.png" width="45%" alt="Orthographic" />
+</p>
+<p align="center"><em>Left: Perspective projection — Right: Orthographic projection</em></p>
 
-<video src="data/Orbiter_freefly_showcase.mp4" controls width="600">Camera showcase: Orbiter & Free-fly</video>
+<p align="center">
+  <video src="data/Orbiter_freefly_showcase.mp4" controls width="80%">Camera showcase: Orbiter & Free-fly</video>
+</p>
 
 Additional camera features include:
 - **Constrained rotation** — lock rotation around the right, up, or forward axis
 - **Align-to-nearest-axis** — double-click to snap the camera to the closest world axis
 - **Zoom**, FOV adjustment, and configurable smoothing
 
-<video src="data/Basic_viewer_glfw_constraint_axis_showcase.mp4" controls width="600">Constrained Rotation showcase</video>
+<p align="center">
+  <video src="data/Basic_viewer_glfw_constraint_axis_showcase.mp4" controls width="80%">Constrained Rotation showcase</video>
+</p>
+<p align="center"><em>Constrained rotation along a single axis</em></p>
 
-<video src="data/Basic_viewer_glfw_align_camera_showcase.mp4" controls width="600">Align to Nearest Axis showcase</video>
+<p align="center">
+  <video src="data/Basic_viewer_glfw_align_camera_showcase.mp4" controls width="80%">Align to Nearest Axis showcase</video>
+</p>
+<p align="center"><em>Align-to-nearest-axis with double-click</em></p>
 
 ---
 
@@ -38,9 +49,15 @@ An interactive infinite clipping plane slices the scene in real time. The plane 
 
 The camera can also be orthogonally aligned to the clipping plane for precise cross-section views.
 
-<video src="data/Basic_viewer_glfw_clipping_plane_showcase.mp4" controls width="600">Clipping Plane showcase</video>
+<p align="center">
+  <video src="data/Basic_viewer_glfw_clipping_plane_showcase.mp4" controls width="80%">Clipping Plane showcase</video>
+</p>
+<p align="center"><em>Interactive clipping plane with rotation and translation</em></p>
 
-<video src="data/Basic_viewer_glfw_align_to_clipping_plane_showcase.mp4" controls width="600">Align to Clipping Plane showcase</video>
+<p align="center">
+  <video src="data/Basic_viewer_glfw_align_to_clipping_plane_showcase.mp4" controls width="80%">Align to Clipping Plane showcase</video>
+</p>
+<p align="center"><em>Camera aligned orthogonally to the clipping plane</em></p>
 
 ---
 
@@ -50,35 +67,55 @@ The camera can also be orthogonally aligned to the clipping plane for precise cr
 
 Edges can be rendered as **cylinders** and vertices as **spheres** via geometry shaders, giving a much cleaner look than raw line/point primitives. This feature was also ported to the Qt viewer.
 
-| Draw all | Solid / transparent | Solid / wireframe | Solid only |
-|---|---|---|---|
-| ![](data/Basic_viewer_glfw_cylinders_spheres_1.png) | ![](data/Basic_viewer_glfw_cylinders_spheres_2.png) | ![](data/Basic_viewer_glfw_cylinders_spheres_3.png) | ![](data/Basic_viewer_glfw_cylinders_spheres_4.png) |
+<p align="center">
+  <img src="data/Basic_viewer_glfw_cylinders_spheres_1.png" width="24%" alt="Draw all" />
+  <img src="data/Basic_viewer_glfw_cylinders_spheres_2.png" width="24%" alt="Solid / transparent" />
+  <img src="data/Basic_viewer_glfw_cylinders_spheres_3.png" width="24%" alt="Solid / wireframe" />
+  <img src="data/Basic_viewer_glfw_cylinders_spheres_4.png" width="24%" alt="Solid only" />
+</p>
+<p align="center"><em>From left to right: Draw all · Solid / transparent · Solid / wireframe · Solid only</em></p>
 
-| With clipping + cylinder/sphere | Combined with normals |
-|---|---|
-| ![](data/Basic_viewer_glfw_qt_geometry_showcase.png) | ![](data/Basic_viewer_glfw_qt_geometry_normal_showcase.png) |
+<p align="center">
+  <img src="data/Basic_viewer_glfw_qt_geometry_showcase.png" width="45%" alt="Clipping with cylinder/sphere" />
+  &nbsp;&nbsp;
+  <img src="data/Basic_viewer_glfw_qt_geometry_normal_showcase.png" width="45%" alt="Combined with normals" />
+</p>
+<p align="center"><em>Left: Clipping with cylinder/sphere rendering — Right: Combined with normal display</em></p>
 
 ### Normal Visualization
 
 Vertex normals can be displayed in mono-color or direction-coded coloring, for both flat and smooth shading. Normals are properly clipped by the clipping plane.
 
-| Mono-color | Direction-colored | Inverted | Flat shading | Smooth shading |
-|---|---|---|---|---|
-| ![](data/Basic_viewer_glfw_normals_showcase_1.png) | ![](data/Basic_viewer_glfw_normals_showcase_2.png) | ![](data/Basic_viewer_glfw_normals_showcase_3.png) | ![](data/Basic_viewer_glfw_flat_shading_normals_showcase.png) | ![](data/Basic_viewer_glfw_smooth_shading_normals_showcase.png) |
+<p align="center">
+  <img src="data/Basic_viewer_glfw_normals_showcase_1.png" width="19%" alt="Mono-color" />
+  <img src="data/Basic_viewer_glfw_normals_showcase_2.png" width="19%" alt="Direction-colored" />
+  <img src="data/Basic_viewer_glfw_normals_showcase_3.png" width="19%" alt="Inverted" />
+  <img src="data/Basic_viewer_glfw_flat_shading_normals_showcase.png" width="19%" alt="Flat shading" />
+  <img src="data/Basic_viewer_glfw_smooth_shading_normals_showcase.png" width="19%" alt="Smooth shading" />
+</p>
+<p align="center"><em>Mono-color · Direction-colored · Inverted · Flat shading · Smooth shading</em></p>
 
-| Clipped normals #1 | Clipped normals #2 |
-|---|---|
-| ![](data/Basic_viewer_glfw_qt_normal_showcase.png) | ![](data/Basic_viewer_glfw_qt_geometry_showcase_2.png) |
+<p align="center">
+  <img src="data/Basic_viewer_glfw_qt_normal_showcase.png" width="45%" alt="Clipped normals" />
+  &nbsp;&nbsp;
+  <img src="data/Basic_viewer_glfw_qt_geometry_showcase_2.png" width="45%" alt="Clipped normals with geometry" />
+</p>
+<p align="center"><em>Normals clipped by the clipping plane</em></p>
 
 ### World Axis & Grid
 
 A 3D world axis gizmo (drawn with geometry-shader cylinders and cones) and an XY grid provide spatial orientation feedback.
 
-| World axis | World axis with normals |
-|---|---|
-| ![](data/Basic_viewer_glfw_world_axis_showcase_1.png) | ![](data/Basic_viewer_glfw_world_axis_showcase_2.png) |
+<p align="center">
+  <img src="data/Basic_viewer_glfw_world_axis_showcase_1.png" width="45%" alt="World axis" />
+  &nbsp;&nbsp;
+  <img src="data/Basic_viewer_glfw_world_axis_showcase_2.png" width="45%" alt="World axis with normals" />
+</p>
+<p align="center"><em>Left: World axis gizmo — Right: With normal display enabled</em></p>
 
-<video src="data/WorldAxis_showcase.mp4" controls width="600">World Axis showcase</video>
+<p align="center">
+  <video src="data/WorldAxis_showcase.mp4" controls width="80%">World Axis showcase</video>
+</p>
 
 ---
 
@@ -86,7 +123,9 @@ A 3D world axis gizmo (drawn with geometry-shader cylinders and cones) and an XY
 
 Record camera poses as keyframes (**`Alt+F1`**) and play back smooth cinematic flythroughs (**`F1`**). Each keyframe stores a quaternion (orientation) and a 3D vector (position). Playback uses SLERP for rotation and linear interpolation for translation, over a configurable duration.
 
-<video src="data/Basic_viewer_glfw_animation_showcase.mp4" controls width="600">Animation showcase</video>
+<p align="center">
+  <video src="data/Basic_viewer_glfw_animation_showcase.mp4" controls width="80%">Animation showcase</video>
+</p>
 
 ---
 
@@ -108,9 +147,12 @@ bv.clipping_plane_translate_along_normal(5);
 bv.make_screenshot("./screenshot.png");
 ```
 
-| Default view | Result of the snippet above |
-|---|---|
-| ![](data/Basic_viewer_glfw_elephant.png) | ![](data/Basic_viewer_glfw_elephant_with_clipping_plane.png) |
+<p align="center">
+  <img src="data/Basic_viewer_glfw_elephant.png" width="45%" alt="Default view" />
+  &nbsp;&nbsp;
+  <img src="data/Basic_viewer_glfw_elephant_with_clipping_plane.png" width="45%" alt="With clipping plane" />
+</p>
+<p align="center"><em>Left: Default view — Right: Result of the code snippet above</em></p>
 
 <details>
 <summary><strong>Full setter reference</strong></summary>
@@ -139,7 +181,10 @@ A dedicated `GLFW` CMake component (mirroring the existing `Qt6` component) hand
 
 QWERTY and AZERTY keyboard layouts are supported. A built-in shortcut help is printed to the console on launch.
 
-![Shortcut help](data/Basic_viewer_glfw_shortcut_help_showcase.png)
+<p align="center">
+  <img src="data/basic_viewer_glfw_shortcut_help_showcase.png" width="70%" alt="Shortcut help" />
+</p>
+<p align="center"><em>Console shortcut reference on launch</em></p>
 
 ---
 
