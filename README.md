@@ -182,7 +182,7 @@ A dedicated `GLFW` CMake component (mirroring the existing `Qt6` component) hand
 QWERTY and AZERTY keyboard layouts are supported. A built-in shortcut help is printed to the console on launch.
 
 <p align="center">
-  <img src="data/basic_viewer_glfw_shortcut_help_showcase.png" width="70%" alt="Shortcut help" />
+  <img src="data/Basic_viewer_glfw_shortcut_help_showcase.png" width="70%" alt="Shortcut help" />
 </p>
 <p align="center"><em>Console shortcut reference on launch</em></p>
 
