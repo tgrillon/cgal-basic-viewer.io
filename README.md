@@ -100,7 +100,7 @@ Vertex normals can be displayed in mono-color or direction-coded coloring, for b
   &nbsp;&nbsp;
   <img src="data/Basic_viewer_glfw_qt_geometry_showcase_2.png" width="45%" alt="Clipped normals with geometry" />
 </p>
-<p align="center"><em>Normals clipped by the clipping plane</em></p>
+<p align="center"><em>Normals clipped by the clipping plane · Cylinder-Sphere display comparison (GLFW vs Qt)</em></p>
 
 ### World Axis & Grid
 
